@@ -13,7 +13,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 var getItems = async () => {
     const command = new ExecuteStatementCommand({
         Statement: "SELECT * FROM relay WHERE id=?",
-        Parameters: ["2"],
+        Parameters: [2],
         ConsistentRead: true,
       });
   
