@@ -1,8 +1,11 @@
 import express from "express";
+import dotenv from "dotenv";
 import { Redis } from "ioredis";
 
 const app = express();
 const port = 8080;
+
+dotenv.config();
 
 // get Redis connection parameters from environment variables
 const redisPort = process.env.REDIS_PORT;
