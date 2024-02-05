@@ -28,8 +28,7 @@ async function getItemsPrivate1(): Promise<Item[]> {
     method: 'GET',
     headers: {
       'content-type': 'application/json;charset=UTF-8',
-    },
-    body: JSON.stringify({})
+    }
   });
 
   fetch(request)
