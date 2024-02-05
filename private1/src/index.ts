@@ -15,7 +15,7 @@ dotenv.config();
 
 var getItems = async () => {
     const command = new ExecuteStatementCommand({
-        Statement: "SELECT * FROM relay WHERE id=?",
+        Statement: "SELECT * FROM \"sgebski-relay-ddb\" WHERE id=?",
         Parameters: [2],
         ConsistentRead: true,
       });
