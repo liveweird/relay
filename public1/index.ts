@@ -1,7 +1,10 @@
 import express from "express";
+import dotenv from "dotenv";
 
 const app = express();
 const port = 8080;
+
+dotenv.config();
 
 const private1Host = process.env.PRIVATE1_HOST;
 const private1Port = process.env.PRIVATE1_PORT;
