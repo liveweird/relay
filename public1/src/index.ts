@@ -8,7 +8,7 @@ dotenv.config();
 
 const private1Host = process.env.PRIVATE1_HOST;
 const private1Port = process.env.PRIVATE1_PORT;
-const private1Address = `http://${private1Host}:${private1Port}/`;
+const private1Address = `https://${private1Host}:${private1Port}/`;
 
 type Item = {
   id: number;
@@ -31,11 +31,18 @@ async function getItemsPrivate1(): Promise<Item[]> {
     }
   });
 
-  fetch(request)
-    .then(response => (response as ItemsResponse).json())
-    .then(items => { return Promise.resolve(items); });
+  console.log(`Trying to connect to ${private1Address}`);
 
-  return Promise.reject();
+  return fetch(request)
+    .then(response => (response as ItemsResponse).json())
+    .then(items => {
+      console.log(`Private1 items: ${items}`);
+      return Promise.resolve(items);
+    })
+    .catch(err => {
+      console.log(`Private1 request error: ${err}`);
+      return Promise.resolve([]);
+    });
 }
 
 
@@ -44,7 +51,8 @@ app.get("/", (req, res) => {
     res.send(items);
   })
   .catch((err) => {
-    console.log(err);
+    console.log(`Promise error: ${err}`);
+    res.send([]);
   });
 });
 
