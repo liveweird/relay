@@ -45,8 +45,8 @@ async function getItemsPrivate1(): Promise<Item[]> {
     });
 }
 
-
 app.get("/", (req, res) => {
+  console.log(`Request received. ${req}`);
   getItemsPrivate1().then((items) => {
     res.send(items);
   })
