@@ -47,6 +47,8 @@ async function getItemsPrivate1(): Promise<Item[]> {
 
 app.get("/", (req, res) => {
   console.log(`Request received. ${req}`);
+  res.send([]);
+  /*
   getItemsPrivate1().then((items) => {
     res.send(items);
   })
@@ -54,6 +56,7 @@ app.get("/", (req, res) => {
     console.log(`Promise error: ${err}`);
     res.send([]);
   });
+  */
 });
 
 app.listen(port, () => {
