@@ -24,9 +24,11 @@ var getItems = async () => {
   redis.set("items", "yoo");
   redis.get("items", (err, result) => {
     if (err) {
-      console.log(err);
+      console.log(`Error: ${err}`);
+    } else {
+      console.log(`Result: ${result}`);
+      return result;
     }
-    return result;
   });
 };
 
