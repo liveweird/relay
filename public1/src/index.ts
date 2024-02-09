@@ -21,6 +21,7 @@ const redis = new Redis({
 });
 
 var getItems = async () => {
+  redis.set("items", "yoo");
   redis.get("items", (err, result) => {
     if (err) {
       console.log(err);
