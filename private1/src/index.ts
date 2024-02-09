@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
@@ -10,6 +11,8 @@ const app = express();
 const port = 8080;
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
+
+app.use(cors());
 
 dotenv.config();
 
