@@ -41,7 +41,7 @@ async function getItemsPrivate1(): Promise<Item[]> {
     })
     .catch(err => {
       console.log(`Private1 request error: ${err}`);
-      return Promise.resolve([]);
+      return Promise.reject(err);
     });
 }
 
