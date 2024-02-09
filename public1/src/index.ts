@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import Redis from "ioredis";
 
 const app = express();
 const port = 8080;
@@ -9,6 +10,24 @@ dotenv.config();
 const private1Host = process.env.PRIVATE1_HOST;
 const private1Port = process.env.PRIVATE1_PORT;
 const private1Address = `https://${private1Host}:${private1Port}/`;
+
+const redisPort = process.env.REDIS_PORT;
+const redisHost = process.env.REDIS_HOST;
+const redisPortInt = parseInt(redisPort ?? "6379");
+
+const redis = new Redis({
+  port: redisPortInt,
+  host: redisHost
+});
+
+var getItems = async () => {
+  redis.get("items", (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    return result;
+  });
+};
 
 type Item = {
   id: number;
@@ -48,7 +67,7 @@ async function getItemsPrivate1(): Promise<Item[]> {
 
 app.get("/", (req, res) => {
   console.log(`Request received. ${req}`);
-  getItemsPrivate1().then((items) => {
+  getItems().then((items) => {
     console.log(`Response received. ${items}`);
     res.send(items);
   })
