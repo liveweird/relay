@@ -26,7 +26,8 @@ type Item = {
 var getItems = async (): Promise<Item[]> => {
   const redis = new Redis({
     port: redisPortInt,
-    host: redisHost
+    host: redisHost,
+    showFriendlyErrorStack: true
   });
 
   console.log(`Redis info: ${redis.info()}`);
