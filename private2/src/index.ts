@@ -1,9 +1,12 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import { Redis } from "ioredis";
 
 const app = express();
 const port = 8080;
+
+app.use(cors());
 
 dotenv.config();
 
