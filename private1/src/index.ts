@@ -72,7 +72,6 @@ var getItems = async () => {
 };
 
 app.get("/", (req, res) => {
-
     Promise.all([getItemsPrivate2()])
     .then((items) => {
             res.send(items);

@@ -23,6 +23,9 @@ var getItems = async () => {
     host: redisHost
   });
 
+  console.log(`Redis info: ${redis.info()}`);
+  console.log(`Redis status: ${redis.status}`);
+
   redis.set("1", JSON.stringify({
     name: "Johnny"
   }));
@@ -48,7 +51,9 @@ var getItems = async () => {
 };
 
 app.get("/", (req, res) => {
+  console.log(`Processing request: ${req}`);
   getItems().then((items) => {
+      console.log(`Received items: ${items}`);
       res.send(items);
   })
   .catch((err) => {
