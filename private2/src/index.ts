@@ -41,7 +41,7 @@ var getItems = async () => {
       {
         id: 3,
         name: result,
-        quantity: 1
+        qty: 1
       }
     );
   });
