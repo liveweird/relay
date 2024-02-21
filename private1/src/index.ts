@@ -46,7 +46,7 @@ async function getItemsPrivate2(): Promise<Item[]> {
     
     return fetch(request)
         .then(response => {
-            console.log(`Unparsed: ${response}`);
+            console.log(`Unparsed: ${JSON.stringify(response)}`);
             return (response as ItemsResponse).json();
         })
         .then(items => {
