@@ -16,6 +16,46 @@ app.use(cors());
 
 dotenv.config();
 
+const private2Host = process.env.PRIVATE2_HOST;
+const private2Port = process.env.PRIVATE2_PORT;
+const private2Address = `https://${private2Host}:${private2Port}/`;
+
+type Item = {
+    id: number;
+    name: string;
+    qty: number;
+}
+
+type ItemsResponse =
+  | (Omit<Response, "json"> & {
+      status: 201;
+      json: () => Item[] | PromiseLike<Item[]>;
+    });
+
+async function getItemsPrivate2(): Promise<Item[]> {
+
+    const request = new Request(private2Address, {
+        method: 'GET',
+        headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        }
+    });
+    
+    console.log(`Trying to connect to ${private2Address}`);
+    
+    return fetch(request)
+        .then(response => (response as ItemsResponse).json())
+        .then(items => {
+            console.log(`Private2 items: ${items}`);
+            return Promise.resolve(items);
+        })
+        .catch(err => {
+            console.log(`Private2 request error: ${err}`);
+            return Promise.reject(err);
+        });
+    }
+
 var getItems = async () => {
     const command = new ExecuteStatementCommand({
         Statement: "SELECT * FROM \"sgebski-relay-ddb\" WHERE id=?",
@@ -29,12 +69,14 @@ var getItems = async () => {
 };
 
 app.get("/", (req, res) => {
-    getItems().then((items) => {
-        res.send(items);
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+
+    Promise.all([getItems(), getItemsPrivate2()])
+    .then((items) => {
+            res.send(items);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 });
 
 app.listen(port, () => {
