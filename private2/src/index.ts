@@ -32,6 +32,7 @@ var getItems = async (): Promise<Item[]> => {
   console.log(`Redis info: ${redis.info()}`);
   console.log(`Redis status: ${redis.status}`);
 
+  /*
   redis.set("1", JSON.stringify({
     name: "Johnny"
   }));
@@ -41,7 +42,31 @@ var getItems = async (): Promise<Item[]> => {
   redis.set("3", JSON.stringify({
     name: "Vanessa"
   }));
+  */
 
+  var promise1 = redis.ping()
+    .then((result) => {
+      console.log(`Ping result: ${result}`);
+      return Promise.resolve({} as Item);
+    })
+    .catch((err) => {
+      console.log(`Ping error: ${err}`);
+      return Promise.reject();
+    });
+
+  var promise2 = redis.hello()
+    .then((result) => {
+      console.log(`Hello result: ${result}`);
+      return Promise.resolve({} as Item);
+    })
+    .catch((err) => {
+      console.log(`Hello error: ${err}`);
+      return Promise.reject();
+    });
+
+  return Promise.all([promise1, promise2]);
+
+    /*
   return redis.get("3")
     .then((result) => {
       console.log(`Result: ${result}`);
@@ -55,6 +80,7 @@ var getItems = async (): Promise<Item[]> => {
         console.log(`Error: ${err}`);
         return Promise.reject(err);  
     });
+    */
 };
 
 app.get("/", (req, res) => {
