@@ -17,13 +17,23 @@ const redisHost = process.env.REDIS_HOST;
 // convert redisPort to integer
 const redisPortInt = parseInt(redisPort ?? "6379");
 
-const redis = new Redis({
-  port: redisPortInt,
-  host: redisHost
-});
-
 var getItems = async () => {
-  redis.get("items", (err, result) => {
+  const redis = new Redis({
+    port: redisPortInt,
+    host: redisHost
+  });
+
+  redis.set("1", JSON.stringify({
+    name: "Johnny"
+  }));
+  redis.set("2", JSON.stringify({
+    name: "Billy"
+  }));
+  redis.set("3", JSON.stringify({
+    name: "Vanessa"
+  }));
+
+  redis.get("3", (err, result) => {
     if (err) {
       console.log(err);
     }
