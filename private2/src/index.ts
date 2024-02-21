@@ -17,7 +17,13 @@ const redisHost = process.env.REDIS_HOST;
 // convert redisPort to integer
 const redisPortInt = parseInt(redisPort ?? "6379");
 
-var getItems = async () => {
+type Item = {
+  id: number;
+  name: string;
+  qty: number;
+}
+
+var getItems = async (): Promise<Item[]> => {
   const redis = new Redis({
     port: redisPortInt,
     host: redisHost
@@ -36,18 +42,19 @@ var getItems = async () => {
     name: "Vanessa"
   }));
 
-  redis.get("3", (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    return JSON.stringify(
-      {
-        id: 3,
-        name: result,
-        qty: 1
-      }
-    );
-  });
+  return redis.get("3")
+    .then((result) => {
+      console.log(`Result: ${result}`);
+      return Promise.resolve([{
+          id: 3,
+          name: result,
+          qty: 1
+        } as Item]);
+    })
+    .catch((err) => {
+        console.log(`Error: ${err}`);
+        return Promise.reject(err);  
+    });
 };
 
 app.get("/", (req, res) => {
