@@ -30,6 +30,8 @@ var getItems = async (): Promise<Item[]> => {
     showFriendlyErrorStack: true
   });
 
+  redis.on('error', (error) => console.log('Got an error from Redis', error));
+
   console.log(`Redis info: ${redis.info()}`);
   console.log(`Redis status: ${redis.status}`);
 
