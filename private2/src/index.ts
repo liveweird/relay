@@ -37,7 +37,13 @@ var getItems = async () => {
     if (err) {
       console.log(err);
     }
-    return result;
+    return JSON.stringify(
+      {
+        id: 3,
+        name: result,
+        quantity: 1
+      }
+    );
   });
 };
 
