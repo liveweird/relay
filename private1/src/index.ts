@@ -45,7 +45,10 @@ async function getItemsPrivate2(): Promise<Item[]> {
     console.log(`Trying to connect to ${private2Address}`);
     
     return fetch(request)
-        .then(response => (response as ItemsResponse).json())
+        .then(response => {
+            console.log(`Unparsed: ${response}`);
+            return (response as ItemsResponse).json();
+        })
         .then(items => {
             console.log(`Private2 items: ${items}`);
             return Promise.resolve(items);
