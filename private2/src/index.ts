@@ -30,7 +30,7 @@ var getItems = async (): Promise<Item[]> => {
       tls: {
         rejectUnauthorized: true
       },
-    showFriendlyErrorStack: true
+    showFriendlyErrorStack: false
   });
 
   redis.on('error', (error) => console.log('Got an error from Redis', error));
