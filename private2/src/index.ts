@@ -27,6 +27,9 @@ var getItems = async (): Promise<Item[]> => {
   const redis = new Redis({
     port: redisPortInt,
     host: redisHost,
+      tls: {
+        rejectUnauthorized: true
+      },
     showFriendlyErrorStack: true
   });
 
