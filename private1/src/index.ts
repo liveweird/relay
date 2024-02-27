@@ -28,7 +28,7 @@ type Item = {
 
 type ItemsResponse =
   | (Omit<Response, "json"> & {
-      status: 201;
+      status: 200;
       json: () => Item[] | PromiseLike<Item[]>;
     });
 
@@ -46,11 +46,9 @@ async function getItemsPrivate2(): Promise<Item[]> {
     
     return fetch(request)
         .then(response => {
-            console.log(`Unparsed: ${response.text()}`);
-            console.log(`Status: ${response.status}`);
-            console.log(`Status text: ${response.statusText}`);
-            return response.json();
-            // return (response as ItemsResponse).json();
+            let cast = (response as ItemsResponse).json();
+            console.log(`Private2 response: ${cast}`);
+            return cast;
         })
         .then(items => {
             console.log(`Private2 items: ${items}`);

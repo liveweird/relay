@@ -18,7 +18,7 @@ type Item = {
 
 type ItemsResponse =
   | (Omit<Response, "json"> & {
-      status: 201;
+      status: 200;
       json: () => Item[] | PromiseLike<Item[]>;
     });
 
