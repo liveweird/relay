@@ -61,21 +61,30 @@ async function getItemsPrivate2(): Promise<Item[]> {
     }
 
 var getItems = async () => {
+    const id = 2;
+
     const command = new ExecuteStatementCommand({
         Statement: "SELECT * FROM \"sgebski-relay-ddb\" WHERE id=?",
-        Parameters: [2],
+        Parameters: [id],
         ConsistentRead: true,
       });
   
     const response = await docClient.send(command);
     console.log(response.Items);
-    return response.Items;
+    return response.Items?.map((item) => {
+        const toBeReturned: Item = {
+            id: id,
+            name: item[0],
+            qty: 1
+        }
+        return toBeReturned;
+    });
 };
 
 app.get("/", (req, res) => {
-    Promise.all([getItemsPrivate2()])
-    .then((items) => {
-            res.send(items);
+    Promise.all([getItems(), getItemsPrivate2()])
+    .then(([items1, items2]) => {
+            res.send(items1?.concat(items2));
         })
         .catch((err) => {
             console.log(err);
