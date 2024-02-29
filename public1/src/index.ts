@@ -1,10 +1,32 @@
 import express from "express";
 import dotenv from "dotenv";
+import * as xray from 'aws-xray-sdk';
+
+xray.captureHTTPsGlobal(require('http'));
 
 const app = express();
 const port = 8080;
 
 dotenv.config();
+
+var rules = {
+  "rules": [
+    {
+      "description": "Public1",
+      "service_name": "*",
+      "http_method": "*",
+      "url_path": "/*",
+      "fixed_target": 1,
+      "rate": 1 }
+    ],
+  "default": { "fixed_target": 1, "rate": 0.1 },
+  "version": 1
+  }
+
+xray.middleware.setSamplingRules(rules);
+
+app.use(xray.express.openSegment('Public1'));
+xray.middleware.enableDynamicNaming('*.awsapprunner.com');
 
 const private1Host = process.env.PRIVATE1_HOST;
 const private1Port = process.env.PRIVATE1_PORT;
@@ -58,6 +80,8 @@ app.get("/", (req, res) => {
   });
   console.log(`Request processed.`);
 });
+
+app.use(xray.express.closeSegment());
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
