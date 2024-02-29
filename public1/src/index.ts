@@ -10,16 +10,25 @@ const port = 8080;
 dotenv.config();
 
 import process from 'process';
-const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { registerInstrumentations } = require('@opentelemetry/instrumentation');
+
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { AwsInstrumentation } from "@opentelemetry/instrumentation-aws-sdk";
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+import {
+  PeriodicExportingMetricReader,
+  ConsoleMetricExporter,
+} from '@opentelemetry/sdk-metrics';
 
-const provider = new NodeTracerProvider();
-provider.register();
-registerInstrumentations({
+const sdk = new NodeSDK({
+  traceExporter: new ConsoleSpanExporter(),
+  metricReader: new PeriodicExportingMetricReader({
+    exporter: new ConsoleMetricExporter(),
+  }),
   instrumentations: [
+    getNodeAutoInstrumentations(),
     new ExpressInstrumentation(),
     new HttpInstrumentation({
         requestHook: (span, request) => {
@@ -31,6 +40,8 @@ registerInstrumentations({
     })
   ],
 });
+
+sdk.start();
 
 var rules = {
   "rules": [
