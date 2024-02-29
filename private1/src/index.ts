@@ -74,7 +74,7 @@ var getItems = async () => {
     return response.Items?.map((item) => {
         const toBeReturned: Item = {
             id: id,
-            name: item[0],
+            name: JSON.stringify(item),
             qty: 1
         }
         return toBeReturned;
