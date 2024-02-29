@@ -9,6 +9,29 @@ const port = 8080;
 
 dotenv.config();
 
+import process from 'process';
+const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
+const { registerInstrumentations } = require('@opentelemetry/instrumentation');
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { AwsInstrumentation } from "@opentelemetry/instrumentation-aws-sdk";
+import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+
+const provider = new NodeTracerProvider();
+provider.register();
+registerInstrumentations({
+  instrumentations: [
+    new ExpressInstrumentation(),
+    new HttpInstrumentation({
+        requestHook: (span, request) => {
+          span.setAttribute("???", "request");
+        },
+    }),
+    new AwsInstrumentation({
+      suppressInternalInstrumentation: true
+    })
+  ],
+});
+
 var rules = {
   "rules": [
     {
