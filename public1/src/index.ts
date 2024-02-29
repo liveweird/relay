@@ -1,66 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
-import * as xray from 'aws-xray-sdk';
-
-xray.captureHTTPsGlobal(require('http'));
 
 const app = express();
 const port = 8080;
 
 dotenv.config();
-
-import process from 'process';
-
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
-import { AwsInstrumentation } from "@opentelemetry/instrumentation-aws-sdk";
-import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
-import {
-  PeriodicExportingMetricReader,
-  ConsoleMetricExporter,
-} from '@opentelemetry/sdk-metrics';
-
-const sdk = new NodeSDK({
-  traceExporter: new ConsoleSpanExporter(),
-  metricReader: new PeriodicExportingMetricReader({
-    exporter: new ConsoleMetricExporter(),
-  }),
-  instrumentations: [
-    getNodeAutoInstrumentations(),
-    new ExpressInstrumentation(),
-    new HttpInstrumentation({
-        requestHook: (span, request) => {
-          span.setAttribute("???", "request");
-        },
-    }),
-    new AwsInstrumentation({
-      suppressInternalInstrumentation: true
-    })
-  ],
-});
-
-sdk.start();
-
-var rules = {
-  "rules": [
-    {
-      "description": "Public1",
-      "service_name": "*",
-      "http_method": "*",
-      "url_path": "/*",
-      "fixed_target": 1,
-      "rate": 1 }
-    ],
-  "default": { "fixed_target": 1, "rate": 0.1 },
-  "version": 1
-  }
-
-xray.middleware.setSamplingRules(rules);
-
-app.use(xray.express.openSegment('Public1'));
-xray.middleware.enableDynamicNaming('*.awsapprunner.com');
 
 const private1Host = process.env.PRIVATE1_HOST;
 const private1Port = process.env.PRIVATE1_PORT;
@@ -114,8 +58,6 @@ app.get("/", (req, res) => {
   });
   console.log(`Request processed.`);
 });
-
-app.use(xray.express.closeSegment());
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
