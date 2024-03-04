@@ -32,7 +32,7 @@ async function getItemsPrivate1(): Promise<Item[]> {
     }
   });
 
-  console.log(`Update 002`);
+  console.log(`Update 003`);
   console.log(`Trying to connect to ${private1Address}`);
 
   return fetch(request)
